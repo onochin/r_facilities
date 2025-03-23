@@ -15,8 +15,8 @@
       z-index: 1;
       background: white;
       border-radius: 4px;
-      padding: 5px;
-      font-size: 14px;
+      padding: 8px;
+      font-size: 16px;
     }
   </style>
 </head>
@@ -30,9 +30,7 @@
   <script>
     const layers = {
       "地理院地図（淡色）": "https://cyberjapandata.gsi.go.jp/xyz/pale/{z}/{x}/{y}.png",
-      "地理院地図（航空写真）": "https://cyberjapandata.gsi.go.jp/xyz/orthophoto/{z}/{x}/{y}.jpg",
       "Google Maps（風）": "https://mt1.google.com/vt/lyrs=m&x={x}&y={y}&z={z}",
-      "洪水浸水想定区域（令和2年）": "https://disaportaldata.gsi.go.jp/raster/01_flood_l2_shinsuishin_data/{z}/{x}/{y}.png",
       "PLATEAU 航空写真測量": "https://gic-plateau.s3.ap-northeast-1.amazonaws.com/2020/ortho/tiles/{z}/{x}/{y}.png"
     };
 
@@ -46,6 +44,11 @@
             tiles: [layers["地理院地図（淡色）"]],
             tileSize: 256,
             attribution: "<a href='https://maps.gsi.go.jp/development/ichiran.html'>地図データ：国土地理院ほか</a>"
+          },
+          flood: {
+            type: 'raster',
+            tiles: ["https://disaportaldata.gsi.go.jp/raster/01_flood_l2_shinsuishin_data/{z}/{x}/{y}.png"],
+            tileSize: 256
           }
         },
         layers: [
@@ -53,6 +56,14 @@
             id: 'base-layer',
             type: 'raster',
             source: 'base',
+            minzoom: 0,
+            maxzoom: 18
+          },
+          {
+            id: 'flood-overlay',
+            type: 'raster',
+            source: 'flood',
+            paint: { 'raster-opacity': 0.6 },
             minzoom: 0,
             maxzoom: 18
           }
