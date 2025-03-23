@@ -89,26 +89,6 @@
           boundry: {
             type: 'geojson',
             data: './data/boundry.geojson'
-          },
-          photoPoints: {
-            type: 'geojson',
-            data: {
-              type: 'FeatureCollection',
-              features: [
-                {
-                  type: 'Feature',
-                  geometry: {
-                    type: 'Point',
-                    coordinates: [139.818112555, 35.743173848]
-                  },
-                  properties: {
-                    title: '隅田水門',
-                    description: '荒川の洪水が隅田川への流入を防ぐ',
-                    image: './photo/03.jpg'
-                  }
-                }
-              ]
-            }
           }
         },
         layers: [
@@ -145,31 +125,6 @@
               'line-blur': 1,
               'line-dasharray': [6, 4]
             }
-          },
-          {
-            id: 'photo-point-layer',
-            type: 'circle',
-            source: 'photoPoints',
-            paint: {
-              'circle-radius': 6,
-              'circle-color': '#FF5722'
-            }
-          },
-          {
-            id: 'photo-point-labels',
-            type: 'symbol',
-            source: 'photoPoints',
-            layout: {
-              'text-field': ['get', 'title'],
-              'text-size': 14,
-              'text-offset': [0, 1.2],
-              'text-anchor': 'top'
-            },
-            paint: {
-              'text-color': '#000000',
-              'text-halo-color': '#ffffff',
-              'text-halo-width': 2
-            }
           }
         ]
       },
@@ -190,6 +145,54 @@
         paint: {
           'line-color': '#007AFF',
           'line-width': 4
+        }
+      });
+
+      map.addSource('photoPoints', {
+        type: 'geojson',
+        data: {
+          type: 'FeatureCollection',
+          features: [
+            {
+              type: 'Feature',
+              geometry: {
+                type: 'Point',
+                coordinates: [139.818112555, 35.743173848]
+              },
+              properties: {
+                title: '隅田水門',
+                description: '荒川の洪水が隅田川への流入を防ぐ',
+                image: './photo/03.jpg'
+              }
+            }
+          ]
+        }
+      });
+
+      map.addLayer({
+        id: 'photo-point-layer',
+        type: 'circle',
+        source: 'photoPoints',
+        paint: {
+          'circle-radius': 6,
+          'circle-color': '#FF5722'
+        }
+      });
+
+      map.addLayer({
+        id: 'photo-point-labels',
+        type: 'symbol',
+        source: 'photoPoints',
+        layout: {
+          'text-field': ['get', 'title'],
+          'text-size': 14,
+          'text-offset': [0, 1.2],
+          'text-anchor': 'top'
+        },
+        paint: {
+          'text-color': '#000000',
+          'text-halo-color': '#ffffff',
+          'text-halo-width': 2
         }
       });
     });
