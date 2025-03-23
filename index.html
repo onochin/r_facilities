@@ -1,8 +1,8 @@
 <!DOCTYPE html>
-<html lang="ja">
+<html>
 <head>
   <meta charset="utf-8" />
-  <title>巡検ルートマップ</title>
+  <title>巡検ルート（GSI地図）</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <link href="https://unpkg.com/maplibre-gl@latest/dist/maplibre-gl.css" rel="stylesheet" />
   <style>
@@ -17,9 +17,30 @@
   <script>
     const map = new maplibregl.Map({
       container: 'map',
-      style: 'https://demotiles.maplibre.org/style.json',
-      center: [139.80575, 35.7561],  // 初期表示位置（例：東京）
-      zoom: 13
+      style: {
+        "version": 8,
+        "sources": {
+          "gsi": {
+            "type": "raster",
+            "tiles": [
+              "https://cyberjapandata.gsi.go.jp/xyz/std/{z}/{x}/{y}.png"
+            ],
+            "tileSize": 256,
+            "attribution": "地図データ：<a href='https://maps.gsi.go.jp/development/ichiran.html'>国土地理院</a>"
+          }
+        },
+        "layers": [
+          {
+            "id": "gsi-std",
+            "type": "raster",
+            "source": "gsi",
+            "minzoom": 5,
+            "maxzoom": 18
+          }
+        ]
+      },
+      center: [139.80575, 35.7561],
+      zoom: 14
     });
 
     map.on('load', () => {
