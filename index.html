@@ -56,6 +56,14 @@
         base: "https://gic-plateau.s3.ap-northeast-1.amazonaws.com/2020/ortho/tiles/{z}/{x}/{y}.png",
         flood: false
       },
+      "標高タイル（陰影起伏図）": {
+        base: "https://cyberjapandata.gsi.go.jp/xyz/relief/{z}/{x}/{y}.png",
+        flood: false
+      },
+      "東京都標高タイル（3D表示用）": {
+        base: "https://tiles.gsj.jp/tiles/elev/tokyo/{z}/{y}/{x}.png",
+        flood: false
+      },
       "洪水浸水想定区域（令和2年）+地理院地図": {
         base: "https://cyberjapandata.gsi.go.jp/xyz/pale/{z}/{x}/{y}.png",
         flood: true
@@ -66,7 +74,7 @@
       }
     };
 
-    const map = new maplibregl.Map({
+    const map = new maplibre-gl.Map({
       container: 'map',
       style: {
         version: 8,
@@ -93,7 +101,7 @@
             type: 'raster',
             source: 'base',
             minzoom: 0,
-            maxzoom: 18
+            maxzoom: 19
           },
           {
             id: 'photo-dim',
