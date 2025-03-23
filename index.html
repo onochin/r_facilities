@@ -89,28 +89,9 @@
           boundry: {
             type: 'geojson',
             data: './data/boundry.geojson'
-          },
-          dem: {
-            type: 'raster-dem',
-            tiles: ["https://demotiles.maplibre.org/terrain-tiles/tiles/{z}/{x}/{y}.png"],
-            tileSize: 256,
-            encoding: "mapbox"
           }
         },
-        terrain: {
-          source: "dem",
-          exaggeration: 1.5
-        },
         layers: [
-          {
-            id: 'sky',
-            type: 'sky',
-            paint: {
-              'sky-type': 'atmosphere',
-              'sky-atmosphere-sun': [0.0, 0.0],
-              'sky-atmosphere-sun-intensity': 15
-            }
-          },
           {
             id: 'base-layer',
             type: 'raster',
@@ -149,8 +130,6 @@
       },
       center: [139.85033, 35.68727],
       zoom: 10,
-      pitch: 60,
-      bearing: -20,
       antialias: true
     });
 
