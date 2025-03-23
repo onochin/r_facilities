@@ -38,7 +38,8 @@
     地図データ：<a href="https://maps.gsi.go.jp/development/ichiran.html" target="_blank">国土地理院</a>、
     <a href="https://disaportal.gsi.go.jp/" target="_blank">防災ポータル</a>、
     <a href="https://www.mlit.go.jp/plateau/" target="_blank">PLATEAU</a>、
-    <a href="https://www.openstreetmap.org/" target="_blank">OpenStreetMap</a>
+    <a href="https://www.openstreetmap.org/" target="_blank">OpenStreetMap</a>、
+    <a href="http://ktgis.net/" target="_blank">今昔マップ</a>
   </div>
 
   <script src="https://unpkg.com/maplibre-gl@latest/dist/maplibre-gl.js"></script>
@@ -67,6 +68,10 @@
       "洪水浸水想定区域（令和2年）+PLATEAU 航空写真測量": {
         base: "https://gic-plateau.s3.ap-northeast-1.amazonaws.com/2020/ortho/tiles/{z}/{x}/{y}.png",
         flood: true
+      },
+      "今昔マップ（東京50万）": {
+        base: "http://ktgis.net/kjmapw/kjtilemap/tokyo50/2man/{z}/{x}/{-y}.png",
+        flood: false
       }
     };
 
@@ -189,8 +194,6 @@
           'text-offset': [0, 1.2],
           'text-anchor': 'top',
           'symbol-placement': 'point',
-          'text-allow-overlap': true,
-          'text-ignore-placement': true,
           'visibility': 'visible'
         },
         paint: {
