@@ -27,6 +27,7 @@
       padding: 4px 8px;
       z-index: 1;
     }
+    /* モーダル用スタイル */
     .modal {
       display: none;
       position: fixed;
@@ -42,10 +43,6 @@
     .modal img {
       max-width: 90vw;
       max-height: 90vh;
-    }
-    .maplibregl-popup-content {
-      max-width: 350px !important;
-      font-size: 15px;
     }
   </style>
 </head>
@@ -98,7 +95,7 @@
       }
     };
 
-    const map = new maplibre-gl.Map({
+    const map = new maplibregl.Map({
       container: 'map',
       style: {
         version: 8,
@@ -203,7 +200,7 @@
         source: 'photoPoints',
         paint: {
           'circle-radius': 6,
-          'circle-color': '#00AA55'
+          'circle-color': '#FF5722'
         }
       });
 
@@ -238,7 +235,7 @@
         .setHTML(`
           <strong>${title}</strong><br>
           ${description}<br>
-          <img src="${image}" style="width:240px; cursor: pointer;" onclick="event.stopPropagation(); document.getElementById('modal-image').src='${image}'; document.getElementById('img-modal').style.display='flex';">
+          <img src="${image}" style="width:200px; cursor: pointer;" onclick="event.stopPropagation(); document.getElementById('modal-image').src='${image}'; document.getElementById('img-modal').style.display='flex';">
         `)
         .addTo(map);
     });
