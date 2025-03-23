@@ -56,6 +56,10 @@
         base: "https://gic-plateau.s3.ap-northeast-1.amazonaws.com/2020/ortho/tiles/{z}/{x}/{y}.png",
         flood: false
       },
+      "標高タイル（陰影起伏図）": {
+        base: "https://cyberjapandata.gsi.go.jp/xyz/relief/{z}/{x}/{y}.png",
+        flood: false
+      },
       "洪水浸水想定区域（令和2年）+地理院地図": {
         base: "https://cyberjapandata.gsi.go.jp/xyz/pale/{z}/{x}/{y}.png",
         flood: true
@@ -66,7 +70,7 @@
       }
     };
 
-    const map = new maplibregl.Map({
+    const map = new maplibre-gl.Map({
       container: 'map',
       style: {
         version: 8,
@@ -85,6 +89,26 @@
           boundry: {
             type: 'geojson',
             data: './data/boundry.geojson'
+          },
+          photoPoints: {
+            type: 'geojson',
+            data: {
+              type: 'FeatureCollection',
+              features: [
+                {
+                  type: 'Feature',
+                  geometry: {
+                    type: 'Point',
+                    coordinates: [139.818112555, 35.743173848]
+                  },
+                  properties: {
+                    title: '隅田水門',
+                    description: '荒川の洪水が隅田川への流入を防ぐ',
+                    image: './photo/03.jpg'
+                  }
+                }
+              ]
+            }
           }
         },
         layers: [
@@ -93,7 +117,7 @@
             type: 'raster',
             source: 'base',
             minzoom: 0,
-            maxzoom: 18
+            maxzoom: 19
           },
           {
             id: 'photo-dim',
@@ -121,11 +145,37 @@
               'line-blur': 1,
               'line-dasharray': [6, 4]
             }
+          },
+          {
+            id: 'photo-point-layer',
+            type: 'circle',
+            source: 'photoPoints',
+            paint: {
+              'circle-radius': 6,
+              'circle-color': '#FF5722'
+            }
+          },
+          {
+            id: 'photo-point-labels',
+            type: 'symbol',
+            source: 'photoPoints',
+            layout: {
+              'text-field': ['get', 'title'],
+              'text-size': 14,
+              'text-offset': [0, 1.2],
+              'text-anchor': 'top'
+            },
+            paint: {
+              'text-color': '#000000',
+              'text-halo-color': '#ffffff',
+              'text-halo-width': 2
+            }
           }
         ]
       },
       center: [139.85033, 35.68727],
-      zoom: 10
+      zoom: 10,
+      antialias: true
     });
 
     map.on('load', () => {
@@ -142,6 +192,25 @@
           'line-width': 4
         }
       });
+    });
+
+    map.on('click', 'photo-point-layer', (e) => {
+      const coordinates = e.features[0].geometry.coordinates.slice();
+      const title = e.features[0].properties.title;
+      const description = e.features[0].properties.description;
+      const image = e.features[0].properties.image;
+
+      new maplibregl.Popup()
+        .setLngLat(coordinates)
+        .setHTML(`<strong>${title}</strong><br>${description}<br><img src="${image}" style="width:200px;">`)
+        .addTo(map);
+    });
+
+    map.on('mouseenter', 'photo-point-layer', () => {
+      map.getCanvas().style.cursor = 'pointer';
+    });
+    map.on('mouseleave', 'photo-point-layer', () => {
+      map.getCanvas().style.cursor = '';
     });
 
     const layerSelect = document.getElementById('layer-select');
