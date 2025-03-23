@@ -92,7 +92,7 @@
           },
           dem: {
             type: 'raster-dem',
-            tiles: ["https://tiles-cdn.klokantech.com/terrain-tiles/tiles/{z}/{x}/{y}.png"],
+            tiles: ["https://demotiles.maplibre.org/terrain-tiles/tiles/{z}/{x}/{y}.png"],
             tileSize: 256,
             encoding: "mapbox"
           }
@@ -139,7 +139,10 @@
         ]
       },
       center: [139.85033, 35.68727],
-      zoom: 10
+      zoom: 10,
+      pitch: 60,
+      bearing: -20,
+      antialias: true
     });
 
     map.on('load', () => {
