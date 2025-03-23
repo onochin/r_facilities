@@ -81,6 +81,10 @@
             type: 'raster',
             tiles: ["https://disaportaldata.gsi.go.jp/raster/01_flood_l2_shinsuishin_data/{z}/{x}/{y}.png"],
             tileSize: 256
+          },
+          boundry: {
+            type: 'geojson',
+            data: './data/boundry.geojson'
           }
         },
         layers: [
@@ -99,11 +103,20 @@
             layout: { visibility: 'none' },
             minzoom: 0,
             maxzoom: 18
+          },
+          {
+            id: 'boundry-line',
+            type: 'line',
+            source: 'boundry',
+            paint: {
+              'line-color': '#888888',
+              'line-width': 1
+            }
           }
         ]
       },
-      center: [139.85033, 35.68727],
-      zoom: 11
+      center: [139.80575, 35.7561],
+      zoom: 12
     });
 
     map.on('load', () => {
