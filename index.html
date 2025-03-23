@@ -2,12 +2,19 @@
 <html>
 <head>
   <meta charset="utf-8" />
-  <title>巡検ルートマップ（国土地理院）</title>
+  <title>巡検ルートマップ（地図切替対応）</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <link href="https://unpkg.com/maplibre-gl@latest/dist/maplibre-gl.css" rel="stylesheet" />
   <style>
     body, html { margin: 0; padding: 0; height: 100%; }
     #map { width: 100%; height: 100%; }
+    .maplibregl-ctrl-top-right { top: 10px; right: 10px; z-index: 1; }
+    .layer-selector {
+      background: white;
+      border-radius: 4px;
+      padding: 5px;
+      font-size: 14px;
+    }
   </style>
 </head>
 <body>
@@ -15,34 +22,41 @@
 
   <script src="https://unpkg.com/maplibre-gl@latest/dist/maplibre-gl.js"></script>
   <script>
+    const layers = {
+      "地理院地図（淡色）": "https://cyberjapandata.gsi.go.jp/xyz/pale/{z}/{x}/{y}.png",
+      "地理院地図（航空写真）": "https://cyberjapandata.gsi.go.jp/xyz/orthophoto/{z}/{x}/{y}.jpg",
+      "Google Maps（風）": "https://mt1.google.com/vt/lyrs=m&x={x}&y={y}&z={z}",
+      "洪水浸水想定区域（令和2年）": "https://disaportaldata.gsi.go.jp/raster/01_flood_l2_shinsuishin_data/{z}/{x}/{y}.png",
+      "PLATEAU 航空写真測量": "https://gic-plateau.s3.ap-northeast-1.amazonaws.com/2020/ortho/tiles/{z}/{x}/{y}.png"
+    };
+
     const map = new maplibregl.Map({
       container: 'map',
       style: {
-        "version": 8,
-        "sources": {
-          "gsi": {
-            "type": "raster",
-            "tiles": [
-              "https://cyberjapandata.gsi.go.jp/xyz/pale/{z}/{x}/{y}.png"
-            ],
-            "tileSize": 256,
-            "attribution": "地図データ：<a href='https://maps.gsi.go.jp/development/ichiran.html'>国土地理院</a>"
+        version: 8,
+        sources: {
+          base: {
+            type: 'raster',
+            tiles: [layers["地理院地図（淡色）"]],
+            tileSize: 256,
+            attribution: "<a href='https://maps.gsi.go.jp/development/ichiran.html'>地図データ：国土地理院ほか</a>"
           }
         },
-        "layers": [
+        layers: [
           {
-            "id": "gsi-std",
-            "type": "raster",
-            "source": "gsi",
-            "minzoom": 0,
-            "maxzoom": 18
+            id: 'base-layer',
+            type: 'raster',
+            source: 'base',
+            minzoom: 0,
+            maxzoom: 18
           }
         ]
       },
-      center: [139.80575, 35.7561], // 巡検ルートの中心座標
+      center: [139.80575, 35.7561],
       zoom: 14
     });
 
+    // 巡検ルートを表示
     map.on('load', () => {
       map.addSource('route', {
         type: 'geojson',
@@ -58,6 +72,24 @@
         }
       });
     });
+
+    // 背景地図の切り替えUIを追加
+    const layerSelector = document.createElement('select');
+    layerSelector.className = 'layer-selector';
+    for (const name in layers) {
+      const option = document.createElement('option');
+      option.value = layers[name];
+      option.textContent = name;
+      layerSelector.appendChild(option);
+    }
+    layerSelector.onchange = (e) => {
+      const url = e.target.value;
+      map.getSource('base').tiles = [url];
+      map.style.sourceCaches['base'].clearTiles();
+      map.style.sourceCaches['base'].update(map.transform);
+      map.triggerRepaint();
+    };
+    map.addControl(new maplibregl.Control({ onAdd: () => layerSelector, onRemove: () => {} }), 'top-right');
   </script>
 </body>
 </html>
