@@ -28,10 +28,23 @@
 
   <script src="https://unpkg.com/maplibre-gl@latest/dist/maplibre-gl.js"></script>
   <script>
-    const layers = {
-      "地理院地図（淡色）": "https://cyberjapandata.gsi.go.jp/xyz/pale/{z}/{x}/{y}.png",
-      "Google Maps（風）": "https://mt1.google.com/vt/lyrs=m&x={x}&y={y}&z={z}",
-      "PLATEAU 航空写真測量": "https://gic-plateau.s3.ap-northeast-1.amazonaws.com/2020/ortho/tiles/{z}/{x}/{y}.png"
+    const layerOptions = {
+      "地理院地図（淡色）": {
+        base: "https://cyberjapandata.gsi.go.jp/xyz/pale/{z}/{x}/{y}.png",
+        flood: false
+      },
+      "Google Maps（風）": {
+        base: "https://mt1.google.com/vt/lyrs=m&x={x}&y={y}&z={z}",
+        flood: false
+      },
+      "PLATEAU 航空写真測量": {
+        base: "https://gic-plateau.s3.ap-northeast-1.amazonaws.com/2020/ortho/tiles/{z}/{x}/{y}.png",
+        flood: false
+      },
+      "洪水浸水想定区域（令和2年）+地理院地図": {
+        base: "https://cyberjapandata.gsi.go.jp/xyz/pale/{z}/{x}/{y}.png",
+        flood: true
+      }
     };
 
     const map = new maplibregl.Map({
@@ -41,7 +54,7 @@
         sources: {
           base: {
             type: 'raster',
-            tiles: [layers["地理院地図（淡色）"]],
+            tiles: [layerOptions["地理院地図（淡色）"].base],
             tileSize: 256,
             attribution: "<a href='https://maps.gsi.go.jp/development/ichiran.html'>地図データ：国土地理院ほか</a>"
           },
@@ -64,6 +77,7 @@
             type: 'raster',
             source: 'flood',
             paint: { 'raster-opacity': 0.6 },
+            layout: { visibility: 'none' },
             minzoom: 0,
             maxzoom: 18
           }
@@ -90,19 +104,22 @@
     });
 
     const layerSelect = document.getElementById('layer-select');
-    for (const name in layers) {
+    for (const name in layerOptions) {
       const option = document.createElement('option');
-      option.value = layers[name];
+      option.value = name;
       option.textContent = name;
       layerSelect.appendChild(option);
     }
 
     layerSelect.onchange = (e) => {
-      const url = e.target.value;
-      map.getSource('base').tiles = [url];
+      const selected = layerOptions[e.target.value];
+      map.getSource('base').tiles = [selected.base];
       map.style.sourceCaches['base'].clearTiles();
       map.style.sourceCaches['base'].update(map.transform);
       map.triggerRepaint();
+
+      const visibility = selected.flood ? 'visible' : 'none';
+      map.setLayoutProperty('flood-overlay', 'visibility', visibility);
     };
   </script>
 </body>
