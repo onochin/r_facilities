@@ -60,10 +60,6 @@
         base: "https://cyberjapandata.gsi.go.jp/xyz/relief/{z}/{x}/{y}.png",
         flood: false
       },
-      "東京都標高タイル（3D表示用）": {
-        base: "https://tiles.gsj.jp/tiles/elev/tokyo/{z}/{y}/{x}.png",
-        flood: false
-      },
       "洪水浸水想定区域（令和2年）+地理院地図": {
         base: "https://cyberjapandata.gsi.go.jp/xyz/pale/{z}/{x}/{y}.png",
         flood: true
@@ -93,7 +89,17 @@
           boundry: {
             type: 'geojson',
             data: './data/boundry.geojson'
+          },
+          dem: {
+            type: 'raster-dem',
+            tiles: ["https://tiles.gsj.jp/tiles/elev/tokyo/{z}/{y}/{x}.png"],
+            tileSize: 256,
+            encoding: "mapbox"
           }
+        },
+        terrain: {
+          source: "dem",
+          exaggeration: 1.5
         },
         layers: [
           {
