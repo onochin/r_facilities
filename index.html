@@ -27,6 +27,23 @@
       padding: 4px 8px;
       z-index: 1;
     }
+    /* モーダル用スタイル */
+    .modal {
+      display: none;
+      position: fixed;
+      z-index: 10;
+      left: 0;
+      top: 0;
+      width: 100vw;
+      height: 100vh;
+      background-color: rgba(0, 0, 0, 0.8);
+      justify-content: center;
+      align-items: center;
+    }
+    .modal img {
+      max-width: 90vw;
+      max-height: 90vh;
+    }
   </style>
 </head>
 <body>
@@ -40,6 +57,9 @@
     <a href="https://www.mlit.go.jp/plateau/" target="_blank">PLATEAU</a>、
     <a href="https://www.openstreetmap.org/" target="_blank">OpenStreetMap</a>、
     <a href="http://ktgis.net/" target="_blank">今昔マップ</a>
+  </div>
+  <div id="img-modal" class="modal" onclick="this.style.display='none'">
+    <img id="modal-image" src="" alt="拡大画像">
   </div>
 
   <script src="https://unpkg.com/maplibre-gl@latest/dist/maplibre-gl.js"></script>
@@ -70,7 +90,7 @@
         flood: true
       },
       "今昔マップ（東京50万）": {
-        base: "https://masumura.ues.tmu.ac.jp/dr_gis/tilemap_noto_webp/02/{z}/{x}/{y}.webp",
+        base: "http://ktgis.net/kjmapw/kjtilemap/tokyo50/2man/{z}/{x}/{-y}.png",
         flood: false
       }
     };
@@ -212,7 +232,11 @@
 
       new maplibregl.Popup()
         .setLngLat(coordinates)
-        .setHTML(`<strong>${title}</strong><br>${description}<br><img src="${image}" style="width:200px;">`)
+        .setHTML(`
+          <strong>${title}</strong><br>
+          ${description}<br>
+          <img src="${image}" style="width:200px; cursor: pointer;" onclick="event.stopPropagation(); document.getElementById('modal-image').src='${image}'; document.getElementById('img-modal').style.display='flex';">
+        `)
         .addTo(map);
     });
 
