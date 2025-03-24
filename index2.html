@@ -2,7 +2,7 @@
 <html>
 <head>
   <meta charset="utf-8" />
-  <title>巡検ルートマップ（地図切替対応）</title>
+  <title>シンボル</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <link href="https://unpkg.com/maplibre-gl@latest/dist/maplibre-gl.css" rel="stylesheet" />
   <style>
@@ -27,7 +27,6 @@
       padding: 4px 8px;
       z-index: 1;
     }
-    /* モーダル用スタイル */
     .modal {
       display: none;
       position: fixed;
@@ -43,6 +42,10 @@
     .modal img {
       max-width: 90vw;
       max-height: 90vh;
+    }
+    .maplibregl-popup-content {
+      max-width: 350px !important;
+      font-size: 15px;
     }
   </style>
 </head>
@@ -95,7 +98,7 @@
       }
     };
 
-    const map = new maplibregl.Map({
+    const map = new maplibre-gl.Map({
       container: 'map',
       style: {
         version: 8,
@@ -173,78 +176,42 @@
         }
       });
 
-      map.addSource('photoPoints', {
-        type: 'geojson',
-        data: {
-          type: 'FeatureCollection',
-          features: [
-            {
-              type: 'Feature',
-              geometry: {
-                type: 'Point',
-                coordinates: [139.818112555, 35.743173848]
-              },
-              properties: {
-                title: '隅田水門',
-                description: '荒川の洪水が隅田川への流入を防ぐ',
-                image: './photo/03.JPG'
-              }
+      const photoData = {
+        type: 'FeatureCollection',
+        features: [
+          {
+            type: 'Feature',
+            geometry: {
+              type: 'Point',
+              coordinates: [139.818112555, 35.743173848]
+            },
+            properties: {
+              title: '隅田水門',
+              description: '荒川の洪水が隅田川への流入を防ぐ',
+              image: './photo/03.JPG'
             }
-          ]
-        }
+          }
+        ]
+      };
+
+      photoData.features.forEach(feature => {
+        const el = document.createElement('div');
+        el.className = 'marker';
+        el.style.backgroundImage = "url('https://upload.wikimedia.org/wikipedia/commons/e/e1/Camera_font_awesome.svg')";
+        el.style.width = '32px';
+        el.style.height = '32px';
+        el.style.backgroundSize = 'contain';
+        el.style.backgroundRepeat = 'no-repeat';
+
+        new maplibre-gl.Marker(el)
+          .setLngLat(feature.geometry.coordinates)
+          .setPopup(new maplibre-gl.Popup().setHTML(`
+            <strong>${feature.properties.title}</strong><br>
+            ${feature.properties.description}<br>
+            <img src="${feature.properties.image}" style="width:240px; cursor: pointer;" onclick="event.stopPropagation(); document.getElementById('modal-image').src='${feature.properties.image}'; document.getElementById('img-modal').style.display='flex';">
+          `))
+          .addTo(map);
       });
-
-      map.addLayer({
-        id: 'photo-point-layer',
-        type: 'circle',
-        source: 'photoPoints',
-        paint: {
-          'circle-radius': 6,
-          'circle-color': '#00AA55'
-        }
-      });
-
-      map.addLayer({
-        id: 'photo-point-labels',
-        type: 'symbol',
-        source: 'photoPoints',
-        layout: {
-          'text-field': ['get', 'title'],
-          'text-size': 14,
-          'text-offset': [0, 1.2],
-          'text-anchor': 'top',
-          'symbol-placement': 'point',
-          'visibility': 'visible'
-        },
-        paint: {
-          'text-color': '#000000',
-          'text-halo-color': '#ffffff',
-          'text-halo-width': 2
-        }
-      });
-    });
-
-    map.on('click', 'photo-point-layer', (e) => {
-      const coordinates = e.features[0].geometry.coordinates.slice();
-      const title = e.features[0].properties.title;
-      const description = e.features[0].properties.description;
-      const image = e.features[0].properties.image;
-
-      new maplibregl.Popup()
-        .setLngLat(coordinates)
-        .setHTML(`
-          <strong>${title}</strong><br>
-          ${description}<br>
-          <img src="${image}" style="width:500px; cursor: pointer;" onclick="event.stopPropagation(); document.getElementById('modal-image').src='${image}'; document.getElementById('img-modal').style.display='flex';">
-        `)
-        .addTo(map);
-    });
-
-    map.on('mouseenter', 'photo-point-layer', () => {
-      map.getCanvas().style.cursor = 'pointer';
-    });
-    map.on('mouseleave', 'photo-point-layer', () => {
-      map.getCanvas().style.cursor = '';
     });
 
     const layerSelect = document.getElementById('layer-select');
