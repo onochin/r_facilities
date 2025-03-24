@@ -200,7 +200,7 @@
         source: 'photoPoints',
         paint: {
           'circle-radius': 6,
-          'circle-color': '#FF5722'
+          'circle-color': '#00AA55'
         }
       });
 
@@ -235,7 +235,7 @@
         .setHTML(`
           <strong>${title}</strong><br>
           ${description}<br>
-          <img src="${image}" style="width:200px; cursor: pointer;" onclick="event.stopPropagation(); document.getElementById('modal-image').src='${image}'; document.getElementById('img-modal').style.display='flex';">
+          <img src="${image}" style="width:300px; cursor: pointer;" onclick="event.stopPropagation(); document.getElementById('modal-image').src='${image}'; document.getElementById('img-modal').style.display='flex';">
         `)
         .addTo(map);
     });
